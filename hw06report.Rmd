@@ -1,0 +1,189 @@
+---
+title: 'Stats 250: Homework 6'
+author: "Instructional Team"
+date: "Spring/Summer 2022"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+If you're finding hard to read this document, remember you can knit the document to see it in a nicer format.
+
+## Instructions 
+We have learned many statistical analysis techniques to help make sense of data and help guide decision-making.  For this homework problem, we ask that you use
+your statistical knowledge and create your own roadmap to make sense of the `cars` data set.  
+
+Here are the 3 steps we want you to follow: 
+
+- **Step 1:** Propose a question that you would like to explore using the `cars` data set.
+- **Step 2:** Explore the data set and perform the appropriate statistical analysis to answer your proposed question.  
+- **Step 3:** Using the appropriate R output you generate, answer your proposed question.
+
+Here's a list of all the statistical analysis techniques you have learned this semester in Stats 250:
+
+- One-sample z-procedures for a population proportion
+- One-sample t-procedures for a population mean
+- Two-sample t-procedures for the comparison of two population means
+- Two-sample z-procedures for the comparison of two population proportions
+- Paired t-procedures for a population mean of differences
+- Simple linear regression
+- Chi-squared test of goodness of fit
+- Chi-squared test of independence
+
+
+## Uploading the cars data set 
+We'll be using the`cars` data set which contains information on a random sample of 500 cars from 2001. **Be sure to run the code chunk below to read in the data set.**
+
+```{r carsdata, error = T}
+cars <- read.csv("cars.csv", row.names = 1)
+head(cars)
+```
+
+The `cars` data set contains the following variables:
+
+- `class`: vehicle class (car or truck/SUV)
+- `fueltype`: fuel type (gas or diesel)
+- `engine`: engine size (in liters)
+- `cylinder`: number of cylinders
+- `consumption`: fuel consumption (in liters per 100km)
+- `emissions`: CO2 emissions (in grams of CO2 per km)
+
+
+## Step 1: Propose a question that you would like to explore using the `cars` data set 
+Think about what would be interesting to you to estimate using this data set or assess a claim about the population of cars based on this data set.   
+
+Now that you have a question in mind, think about the type of variables you will be analyzing to answer your proposed research question.  How many variables will you need from the list above? Are the variables categorical? Are the variables quantitative? 
+
+
+## Functions for z-procedures (categorical variables)
+R doesn't have any helpful functions built-in for running z-procedures for proportions. Recall from Lab 5, we provided some functions that we created for you. 
+
+
+### CI for One Population Proportion
+Run the following code chunk to create the `onePopPropCI()` function (see Lab 5).
+
+```{r onePopPropCIfunction, echo = FALSE}
+
+onePopPropCI <- function(x, n, confidence = 0.95){
+  
+  # Calculates the sample proportion
+  phat <- x / n
+  
+  # Calculates the standard error
+  se.phat <- sqrt((phat * (1 - phat)) / n)
+  
+  # Finds the z* multiplier
+  z.multiplier <- qnorm((1 - confidence) / 2, lower.tail = FALSE)
+  
+  # Calculates the lower and upper bound of the interval
+  lower.bound <- phat - z.multiplier*se.phat
+  upper.bound <- phat + z.multiplier*se.phat
+  
+  # Returns a sentence with the results
+  return(paste("The ", confidence*100, "% confidence interval is given as: (",
+               round(lower.bound,4), ", ", round(upper.bound,4),").", sep = ""))
+}
+
+```
+
+The `onePopPropCI()` function has three arguments:
+
+1. `x`: observed number of "successes"
+2. `n`: sample size 
+3. `confidence`: confidence level (the default is 0.95)
+
+
+### HT for One Population Proportion
+
+Run the following code chunk to create the `onePopPropHT()` function (see Lab 5).
+
+```{r onePopPropHTfunction, echo = FALSE}
+
+onePopPropHT <- function(x, n, p0, alt = "two.sided"){
+  
+  # Calculates the sample proportion and z test statistic
+  phat <- x / n
+  
+  # Calculates the null standard deviation
+  null.sd <- sqrt((p0 * (1 - p0)) / n)
+  
+  # Calculates the z test statistic
+  z.test.stat <- (phat - p0) / null.sd
+  
+  # Calculates the p-value (based on the alternative hypothesis provided - default is two-sided)
+  if (alt == "greater") {p.value <- pnorm(z.test.stat, lower.tail = FALSE)
+  } else if (alt == "less") {p.value <- pnorm(z.test.stat, lower.tail = TRUE)
+  } else if (alt == "two.sided") {p.value <- 2 * pnorm(abs(z.test.stat), lower.tail = FALSE)
+  }
+  
+  # Returns list of helpful values
+  return(list("phat" = phat, "null.sd" = null.sd, "test.stat" = z.test.stat, "p.value" = p.value))
+}
+```
+
+The `onePopPropHT()` function has four arguments:
+
+1. `x`: observed number of "successes"
+2. `n`: sample size 
+3. `p0`: hypothesized proportion
+4. `alt`: alternative hypothesis ("less", "greater", or "two.sided")
+
+
+## Statistical analysis 
+In this section, you are provided with code chunks to explore the data set and perform the appropriate statistical analysis. 
+
+
+### Exploring the data set 
+The first step to data analysis is to explore the data set.  The exploration  process can consists of making plots, generating appropriate numerical summaries or creating tables.  We are providing three code chunks below for you to explore the data.  You may find this [R Code Cheat Sheet](https://docs.google.com/spreadsheets/d/1tTTYeAIpeSeCA72GiutRZ9k2oAXvrITCuV4NUPA0_lo/edit#gid=0) helpful. 
+
+```{r exploration1, error = T}
+# Feel free to copy, paste, and alter code from previous labs! (Remember that this text is a comment, so R ignores it; you can delete it if you want. If you don't delete it, START CODE ON THE NEXT BLANK LINE)
+
+```
+
+```{r exploration2, error = T}
+# Feel free to copy, paste, and alter code from previous labs! (Remember that this text is a comment, so R ignores it; you can delete it if you want. If you don't delete it, START CODE ON THE NEXT BLANK LINE)
+
+```
+
+```{r exploration3, error = T}
+# Feel free to copy, paste, and alter code from previous labs! (Remember that this text is a comment, so R ignores it; you can delete it if you want. If you don't delete it, START CODE ON THE NEXT BLANK LINE)
+
+```
+
+
+### Performing statistical analysis to answer your proposed question.  
+Now that you have explored the data set, it is time to run the appropriate statistical analysis.  **Remember:** you may assume all assumptions are met to perform the statistical analysis. 
+
+```{r analysis1, error = T}
+# Feel free to copy, paste, and alter code from your previous labs! (Remember that this text is a comment, so R ignores it; you can delete it if you want. If you don't delete it, START CODE ON THE NEXT BLANK LINE)
+
+```
+
+```{r analysis2, error = T}
+# Feel free to copy, paste, and alter code from your previous labs! (Remember that this text is a comment, so R ignores it; you can delete it if you want. If you don't delete it, START CODE ON THE NEXT BLANK LINE)
+
+```
+
+```{r analysis3, error = T}
+# Feel free to copy, paste, and alter code from your previous labs! (Remember that this text is a comment, so R ignores it; you can delete it if you want. If you don't delete it, START CODE ON THE NEXT BLANK LINE)
+
+```
+
+
+## How to upload saved images to Course.Work? Please do not copy and paste
+As part of your answer to your proposed questions, you will need to upload **screenshots** of your R output to course.work.  Here are the steps:
+
+- **Option 1:** Right click on your plot and click "Save Image".
+
+- **Option 2:** Take a screenshot of the plot (Mac users can hit "Command + Shift + 4" to select the portion of the screen to capture; Windows users can hit "Windows logo + Shift + S" to do the same).
+
+Whichever you prefer! Then head to Course.Work and upload your **saved** image. **Please do not copy and paste the image to Course.Work**, this will yield an error and we will not be able to view the image for grading.  Be sure to *upload your saved image*.  
+
